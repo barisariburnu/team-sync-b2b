@@ -34,7 +34,7 @@ export const loginOrCreateAccountService = async (data: {
 
             // 2. Create account
             const account = new AccountModel({
-                user: user._id,
+                userId: user._id,
                 provider: provider,
                 providerId: providerId,
             });
@@ -50,12 +50,12 @@ export const loginOrCreateAccountService = async (data: {
 
             const ownerRole = await RoleModel.findOne({ name: Roles.OWNER }).session(session);
             if (!ownerRole) {
-                throw new NotFoundException("Resource Not Found Error");
+                throw new NotFoundException("Owner role not found");
             }
 
             const member = new MemberModel({
-                user: user._id,
-                workspace: workspace._id,
+                userId: user._id,
+                workspaceId: workspace._id,
                 role: ownerRole._id,
                 joinedAt: new Date(),
             });
