@@ -1,6 +1,8 @@
 import { ErrorCodeEnum } from "../enums/error-code.enum";
+import { Roles } from "../enums/role.enum";
 import MemberModel from "../models/member.model";
-import WorkspaceModel from "../models/workspace.mode";
+import RoleModel from "../models/roles-permission.model";
+import WorkspaceModel from "../models/workspace.model";
 import { NotFoundException, UnauthorizedException } from "../utils/appError";
 
 export const getMemberRoleInWorkspace = async (userId: string, workspaceId: string) => {
@@ -12,7 +14,7 @@ export const getMemberRoleInWorkspace = async (userId: string, workspaceId: stri
     const member = await MemberModel
         .findOne({ userId: userId, workspaceId: workspaceId })
         .populate("role");
-    
+
     if (!member) {
         throw new UnauthorizedException("You are not a member of this workspace", ErrorCodeEnum.ACCESS_UNAUTHORIZED);
     }
@@ -23,3 +25,37 @@ export const getMemberRoleInWorkspace = async (userId: string, workspaceId: stri
         role: roleName,
     }
 }
+
+export const joinWorkspaceByInvite = async (userId: string, inviteCode: string) => {
+    // Find workspace by invite code
+    const workspace = await WorkspaceModel.findOne({ inviteCode }).exec();
+    if (!workspace) {
+        throw new NotFoundException("Invalid invite code or workspace not found");
+    }
+
+    // Check if user is already a member of the workspace
+    const existingMember = await MemberModel.findOne({ userId: userId, workspaceId: workspace._id }).exec();
+    if (existingMember) {
+        throw new UnauthorizedException("You are already a member of this workspace", ErrorCodeEnum.ACCESS_UNAUTHORIZED);
+    }
+
+    // Find member role
+    const role = await RoleModel.findOne({ name: Roles.MEMBER }).exec();
+    if (!role) {
+        throw new NotFoundException("Role not found");
+    }
+
+    // Adduser to workspace as a member
+    const newMember = new MemberModel({
+        userId,
+        workspaceId: workspace._id,
+        role: role._id,
+    });
+    await newMember.save();
+
+    return {
+        workspaceId: workspace._id,
+        role: role.name,
+    }
+}
+

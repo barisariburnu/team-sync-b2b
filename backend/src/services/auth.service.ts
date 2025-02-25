@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import UserModel from "../models/user.model";
 import AccountModel from "../models/account.model";
-import WorkspaceModel from "../models/workspace.mode";
+import WorkspaceModel from "../models/workspace.model";
 import { NotFoundException, BadRequestException, UnauthorizedException } from "../utils/appError";
 import { Roles } from "../enums/role.enum";
 import MemberModel from "../models/member.model";
