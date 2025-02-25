@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { createProjectService, getProjectsInWorkspaceService } from "../services/project.service";
+import { createProjectService, getProjectAnalyticsService, getProjectByIdAndWorkspaceIdService, getProjectsInWorkspaceService } from "../services/project.service";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
-import { createProjectSchema } from "../validation/project.validation";
+import { createProjectSchema, projectIdSchema } from "../validation/project.validation";
 import { workspaceIdSchema } from "../validation/workspace.validation";
 import { getMemberRoleInWorkspace } from "../services/member.service";
 import { roleGuard } from "../utils/roleGuard";
@@ -48,6 +48,38 @@ export const getAllProjectsInWorkspaceController = asyncHandler(async (req: Requ
             skip,
             limit: pageSize,
         },
+    });
+});
+
+export const getProjectByIdAndWorkspaceIdController = asyncHandler(async (req: Request, res: Response) => {
+    const projectId = projectIdSchema.parse(req.params.id);
+    const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+    const userId = req.user?._id;
+
+    const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+    roleGuard(role, [Permissions.VIEW_ONLY]);
+
+    const { project } = await getProjectByIdAndWorkspaceIdService(projectId, workspaceId);
+
+    return res.status(HTTP_STATUS.OK).json({
+        message: "Project fetched successfully",
+        project,
+    });
+});
+
+export const getProjectAnalyticsController = asyncHandler(async (req: Request, res: Response) => {
+    const projectId = projectIdSchema.parse(req.params.id);
+    const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+    const userId = req.user?._id;
+
+    const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+    roleGuard(role, [Permissions.VIEW_ONLY]);
+
+    const { analytics } = await getProjectAnalyticsService(projectId, workspaceId);
+
+    return res.status(HTTP_STATUS.OK).json({
+        message: "Project analytics fetched successfully",
+        analytics,
     });
 });
 
