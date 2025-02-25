@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
-import { createProjectService, getProjectAnalyticsService, getProjectByIdAndWorkspaceIdService, getProjectsInWorkspaceService } from "../services/project.service";
+import { createProjectService, deleteProjectService, getProjectAnalyticsService, getProjectByIdAndWorkspaceIdService, getProjectsInWorkspaceService, updateProjectService } from "../services/project.service";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
-import { createProjectSchema, projectIdSchema } from "../validation/project.validation";
+import { createProjectSchema, projectIdSchema, updateProjectSchema } from "../validation/project.validation";
 import { workspaceIdSchema } from "../validation/workspace.validation";
 import { getMemberRoleInWorkspace } from "../services/member.service";
 import { roleGuard } from "../utils/roleGuard";
 import { Permissions } from "../enums/role.enum";
 import { HTTP_STATUS } from "../config/http.config";
-import ProjectModel from "../models/project.model";
 
 export const createProjectController = asyncHandler(async (req: Request, res: Response) => {
     const body = createProjectSchema.parse(req.body);
@@ -83,3 +82,45 @@ export const getProjectAnalyticsController = asyncHandler(async (req: Request, r
     });
 });
 
+export const updateProjectController = asyncHandler(
+    async (req: Request, res: Response) => {
+        const userId = req.user?._id;
+
+        const projectId = projectIdSchema.parse(req.params.id);
+        const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+
+        const body = updateProjectSchema.parse(req.body);
+
+        const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+        roleGuard(role, [Permissions.EDIT_PROJECT]);
+
+        const { project } = await updateProjectService(
+            workspaceId,
+            projectId,
+            body
+        );
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Project updated successfully",
+            project,
+        });
+    }
+);
+
+export const deleteProjectController = asyncHandler(
+    async (req: Request, res: Response) => {
+        const userId = req.user?._id;
+
+        const projectId = projectIdSchema.parse(req.params.id);
+        const workspaceId = workspaceIdSchema.parse(req.params.workspaceId);
+
+        const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+        roleGuard(role, [Permissions.DELETE_PROJECT]);
+
+        await deleteProjectService(workspaceId, projectId);
+
+        return res.status(HTTP_STATUS.OK).json({
+            message: "Project deleted successfully",
+        });
+    }
+);
