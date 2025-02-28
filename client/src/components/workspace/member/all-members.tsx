@@ -30,7 +30,7 @@ const AllMembers = () => {
   const workspaceId = useWorkspaceId();
 
   const { data, isPending } = useGetWorkspaceMembers(workspaceId);
-  const members = data?.members;
+  const members = data?.members || [];
   const roles = data?.roles || [];
 
   const { mutate, isPending: isLoading } = useMutation({
@@ -38,6 +38,7 @@ const AllMembers = () => {
   });
 
   const handleSelect = (roleId: string, memberId: string) => {
+    if (!roleId || !memberId) return;
     const payload = {
       workspaceId,
       data: { roleId, memberId },
@@ -55,7 +56,7 @@ const AllMembers = () => {
       },
       onError: (error) => {
         toast({
-          title: "Failed to change role",
+          title: "Error",
           description: error.message,
           variant: "destructive",
         });
@@ -101,7 +102,7 @@ const AllMembers = () => {
                     className="ml-auto min-w-24 capitalize disabled:opacity-95 disabled:pointer-events-none"
                   >
                     {member.role.name?.toLowerCase()}{" "}
-                    {member.userId?._id === user?._id && (
+                    {member.userId?._id !== user?._id && (
                       <ChevronDown className="text-muted-foreground" />
                     )}
                   </Button>
@@ -127,9 +128,9 @@ const AllMembers = () => {
                                     key={role._id}
                                     disabled={isLoading}
                                     className="disabled:pointer-events-none gap-1 mb-1 teamaspace-y-1 flex flex-col items-start px-4 py-2 cursor-pointer"
-                                    onSelect={() =>
-                                      handleSelect(role._id, member.userId._id)
-                                    }
+                                    onSelect={() => {
+                                      handleSelect(role._id, member.userId._id);
+                                    }}
                                   >
                                     <p className="capitalize">
                                       {role.name?.toLowerCase()}
