@@ -9,6 +9,7 @@ import {
   CreateWorkspaceType,
   CreateWorkspaceResponseType,
   EditWorkspaceType,
+  AnalyticsResponseType,
 } from "@/types/api.type";
 
 export const loginMutationFn = async (
@@ -63,7 +64,12 @@ export const getWorkspaceByIdQueryFn = async (
   return response.data;
 };
 
-export const getWorkspaceAnalyticsQueryFn = async () => {};
+export const getWorkspaceAnalyticsQueryFn = async (
+  workspaceId: string
+): Promise<AnalyticsResponseType> => {
+  const response = await API.get(`/workspace/analytics/${workspaceId}`);
+  return response.data;
+};
 
 export const changeWorkspaceMemberRoleMutationFn = async () => {};
 
