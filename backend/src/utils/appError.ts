@@ -19,7 +19,7 @@ export class AppError extends Error {
 
 export class HttpException extends AppError {
     constructor(
-        message: string = "Http Exception Error",
+        message = "Http Exception Error",
         statusCode: HttpStatusCodeType,
         errorCode?: ErrorCodeEnumType
     ) {
@@ -27,9 +27,9 @@ export class HttpException extends AppError {
     }
 }
 
-export class InternalServerError extends AppError {
+export class InternalServerException extends AppError {
     constructor(
-        message: string = "Internal Server Error",
+        message = "Internal Server Error",
         errorCode?: ErrorCodeEnumType
     ) {
         super(
@@ -41,10 +41,7 @@ export class InternalServerError extends AppError {
 }
 
 export class NotFoundException extends AppError {
-    constructor(
-        message: string = "Resource Not Found Exception",
-        errorCode?: ErrorCodeEnumType
-    ) {
+    constructor(message = "Resource not found", errorCode?: ErrorCodeEnumType) {
         super(
             message,
             HTTP_STATUS.NOT_FOUND,
@@ -54,26 +51,21 @@ export class NotFoundException extends AppError {
 }
 
 export class BadRequestException extends AppError {
-    constructor(
-        message: string = "Bad Request Exception",
-        errorCode?: ErrorCodeEnumType
-    ) {
+    constructor(message = "Bad Request", errorCode?: ErrorCodeEnumType) {
         super(
             message,
             HTTP_STATUS.BAD_REQUEST,
-            errorCode || ErrorCodeEnum.VALIDATION_ERROR);
+            errorCode || ErrorCodeEnum.VALIDATION_ERROR
+        );
     }
 }
 
 export class UnauthorizedException extends AppError {
-    constructor(
-        message: string = "Unauthorized Exception",
-        errorCode?: ErrorCodeEnumType
-    ) {
+    constructor(message = "Unauthorized Access", errorCode?: ErrorCodeEnumType) {
         super(
             message,
             HTTP_STATUS.UNAUTHORIZED,
-            errorCode || ErrorCodeEnum.AUTH_UNAUTHORIZED
+            errorCode || ErrorCodeEnum.ACCESS_UNAUTHORIZED
         );
     }
 }

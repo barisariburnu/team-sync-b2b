@@ -1,9 +1,20 @@
 import { createContext, useContext, useEffect } from "react";
+import useAuth from "@/hooks/api/use-auth";
+import { UserType, WorkspaceType } from "@/types/api.type";
 import useWorkspaceId from "@/hooks/use-workspace-id";
+import useGetWorkspaceQuery from "@/hooks/api/use-get-workspace";
+import { useNavigate } from "react-router-dom";
 
 // Define the context shape
 type AuthContextType = {
-  workspaceId: string;
+  user?: UserType;
+  workspace?: WorkspaceType;
+  isLoading: boolean;
+  workspaceLoading: boolean;
+  isFetching: boolean;
+  error: any;
+  refetchAuth: () => void;
+  refetchWorkspace: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -11,15 +22,47 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  //const navigate = useNavigate();
   const workspaceId = useWorkspaceId();
+  const navigate = useNavigate();
 
-  useEffect(() => {});
+  const {
+    data: authData,
+    error: authError,
+    isLoading,
+    isFetching,
+    refetch: refetchAuth,
+  } = useAuth();
+
+  const user = authData?.user;
+
+  const {
+    data: workspaceData,
+    isLoading: workspaceLoading,
+    error: workspaceError,
+    refetch: refetchWorkspace,
+  } = useGetWorkspaceQuery(workspaceId);
+
+  const workspace = workspaceData?.workspace;
+
+  useEffect(() => {
+    if (workspaceError) {
+      if (workspaceError?.errorCode === "ACCESS_UNAUTHORIZED") {
+        navigate("/");
+      }
+    }
+  }, [navigate, workspaceError]);
 
   return (
     <AuthContext.Provider
       value={{
-        workspaceId,
+        user,
+        workspace,
+        error: authError || workspaceError,
+        isLoading,
+        isFetching,
+        workspaceLoading,
+        refetchAuth,
+        refetchWorkspace,
       }}
     >
       {children}

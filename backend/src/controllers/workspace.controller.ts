@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { changeRoleSchema, createWorkspaceSchema, updateWorkspaceSchema, workspaceIdSchema } from "../validation/workspace.validation";
 import { HTTP_STATUS } from "../config/http.config";
-import { changeMemberRoleService, createWorkspaceService, deleteWorkspaceByIdService, getAllWorkpacesUserIsMemberService, getWorkspaceAnalyticsService, getWorkspaceByIdService, getWorkspaceMembersService, updateWorkspaceByIdService } from "../services/workspace.service";
+import { changeMemberRoleService, createWorkspaceService, deleteWorkspaceByIdService, getAllWorkspacesUserIsMemberService, getWorkspaceAnalyticsService, getWorkspaceByIdService, getWorkspaceMembersService, updateWorkspaceByIdService } from "../services/workspace.service";
 import { getMemberRoleInWorkspace } from "../services/member.service";
 import { roleGuard } from "../utils/roleGuard";
 import { Permissions } from "../enums/role.enum";
@@ -19,11 +19,13 @@ export const createWorkspaceController = asyncHandler(async (req: Request, res: 
     });
 });
 
-export const getAllWorkpacesUserIsMemberController = asyncHandler(async (req: Request, res: Response) => {
+export const getAllWorkspacesUserIsMemberController = asyncHandler(async (req: Request, res: Response) => {
     const userId = req.user?._id;
-    const workspaces = await getAllWorkpacesUserIsMemberService(userId);
+
+    const { workspaces } = await getAllWorkspacesUserIsMemberService(userId);
 
     return res.status(HTTP_STATUS.OK).json({
+        message: "User workspaces fetched successfully",
         workspaces,
     });
 });

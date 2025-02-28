@@ -55,7 +55,7 @@ export const createWorkspaceService = async (userId: string, body: { name: strin
 //********************************
 // GET WORKSPACES USER IS A MEMBER
 //********************************
-export const getAllWorkpacesUserIsMemberService = async (userId: string) => {
+export const getAllWorkspacesUserIsMemberService = async (userId: string) => {
     const memberships = await MemberModel.find({ userId: userId })
         .populate("workspaceId")
         .select("-password")

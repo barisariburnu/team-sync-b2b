@@ -13,8 +13,8 @@ const appConfig = () => ({
     GOOGLE_CLIENT_SECRET: getEnv("GOOGLE_CLIENT_SECRET"),
     GOOGLE_CALLBACK_URL: getEnv("GOOGLE_CALLBACK_URL"),
 
-    FRONTEND_ORIGIN: getEnv("FRONTEND_ORIGIN", "localhost"),
-    FRONTEND_GOOGLE_CALLBACK_URL: getEnv("FRONTEND_GOOGLE_CALLBACK_URL"),
+    FRONTEND_ORIGIN: getEnv("FRONTEND_ORIGIN", "http://localhost:5173"),
+    FRONTEND_GOOGLE_CALLBACK_URL: getEnv("FRONTEND_GOOGLE_CALLBACK_URL", "http://localhost:5173/oauth/google/callback"),
 });
 
 export const config = appConfig();
