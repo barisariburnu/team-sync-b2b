@@ -66,7 +66,6 @@ export function NavProjects() {
         <SidebarGroupLabel className="w-full justify-between pr-0">
           <span>Projects</span>
           <PermissionsGuard
-            showMessage
             requiredPermission={Permissions.CREATE_PROJECT}
           >
             <button
@@ -86,7 +85,6 @@ export function NavProjects() {
                 will show up here.
               </p>
               <PermissionsGuard
-                showMessage
                 requiredPermission={Permissions.CREATE_PROJECT}
               >
                 <Button
