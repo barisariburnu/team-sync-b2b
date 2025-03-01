@@ -26,6 +26,9 @@ import { Permissions } from "@/constant";
 import { useState } from "react";
 import useGetProjectsInWorkspaceQuery from "@/hooks/api/use-get-projects";
 import { PaginationType } from "@/types/api.type";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteProjectMutationFn } from "@/lib/api";
+import { toast } from "@/hooks/use-toast";
 
 export function NavProjects() {
   const navigate = useNavigate();
@@ -33,12 +36,17 @@ export function NavProjects() {
   const pathname = location.pathname;
   const workspaceId = useWorkspaceId();
   const { isMobile } = useSidebar();
+  const queryClient = useQueryClient();
 
   const { onOpen } = useCreateProjectDialog();
   const { context, open, onOpenDialog, onCloseDialog } = useConfirmDialog();
 
   const [pageNumber] = useState(1);
   const [pageSize, setPageSize] = useState(5);
+
+  const { mutate, isPending: isLoading } = useMutation({
+    mutationFn: deleteProjectMutationFn,
+  });
 
   const { data, isPending, isFetching, isError } = useGetProjectsInWorkspaceQuery({
     workspaceId,
@@ -56,7 +64,31 @@ export function NavProjects() {
     setPageSize((prev) => prev + 5);
   };
 
-  const handleConfirm = () => {};
+  const handleConfirm = () => {
+    if (!context) return;
+    mutate({ workspaceId, projectId: context._id }, {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({ 
+          queryKey: ["allprojects", workspaceId],
+        });
+        toast({
+          title: "Success",
+          description: data.message,
+          variant: "success",
+          });
+          navigate(`/workspace/${workspaceId}`);
+          setTimeout(() => onCloseDialog(), 100);
+        },
+        onError: (error) => {
+          toast({
+            title: "Error",
+            description: error.message,
+            variant: "destructive",
+          });
+        },
+      }
+    );
+  };
   return (
     <>
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -131,7 +163,7 @@ export function NavProjects() {
                       >
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          disabled={false}
+                          disabled={isLoading}
                           onClick={() => onOpenDialog(item)}
                         >
                           <Trash2 className="text-muted-foreground" />
@@ -162,7 +194,7 @@ export function NavProjects() {
 
       <ConfirmDialog
         isOpen={open}
-        isLoading={false}
+        isLoading={isLoading}
         onClose={onCloseDialog}
         onConfirm={handleConfirm}
         title="Delete Project"

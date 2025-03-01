@@ -28,9 +28,16 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "../../ui/textarea";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
-import { transformOptions } from "@/lib/helper";
+import {
+  getAvatarFallbackText,
+  getAvatarColor,
+  transformOptions,
+} from "@/lib/helper";
 import useWorkspaceId from "@/hooks/use-workspace-id";
 import { TaskPriorityEnum, TaskStatusEnum } from "@/constant";
+import useGetProjectsInWorkspaceQuery from "@/hooks/api/use-get-projects";
+import useGetWorkspaceMembersQuery from "@/hooks/api/use-get-workspace-members";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function CreateTaskForm(props: {
   projectId?: string;
@@ -40,12 +47,51 @@ export default function CreateTaskForm(props: {
 
   const workspaceId = useWorkspaceId();
 
-  const isLoading = false;
+  const { data, isLoading } = useGetProjectsInWorkspaceQuery({
+    workspaceId,
+    skip: !!projectId,
+  });
 
-  //const projectOptions = []
+  const { data: memberData } = useGetWorkspaceMembersQuery(workspaceId);
+
+  const projects = data?.projects || [];
+  const members = memberData?.members || [];
+
+  // Workspace Projects
+  const projectOptions = projects?.map((project) => {
+    return {
+      label: (
+        <div className="flex items-center gap-1">
+          <span>{project.emoji}</span>
+          <span>{project.name}</span>
+        </div>
+      ),
+      value: project._id,
+    };
+  });
 
   // Workspace Memebers
-  //const membersOptions = []
+  const membersOptions = members?.map((member) => {
+    const name = member?.userId?.name || "Unknown";
+    const initials = getAvatarFallbackText(name);
+    const avatarColor = getAvatarColor(name);
+
+    return {
+      label: (
+        <div className="flex items-center space-x-2">
+          <Avatar className="h-7 w-7">
+            <AvatarImage
+              src={member?.userId?.profilePicture || ""}
+              alt={name}
+            />
+            <AvatarFallback className={avatarColor}>{initials}</AvatarFallback>
+          </Avatar>
+          <span>{name}</span>
+        </div>
+      ),
+      value: member.userId._id,
+    };
+  });
 
   const formSchema = z.object({
     title: z.string().trim().min(1, {
@@ -180,15 +226,17 @@ export default function CreateTaskForm(props: {
                               <Loader className="w-4 h-4 place-self-center flex animate-spin" />
                             </div>
                           )}
-                          <SelectItem value="m@example.com">
-                            m@example.com
-                          </SelectItem>
-                          <SelectItem value="m@google.com">
-                            m@google.com
-                          </SelectItem>
-                          <SelectItem value="m@support.com">
-                            m@support.com
-                          </SelectItem>
+                          <div className="w-full max-h-[200px] overflow-y-auto scrollbar">
+                            {projectOptions?.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                                className="!capitalize cursor-pointer"
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </div>
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -217,15 +265,17 @@ export default function CreateTaskForm(props: {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="m@example.com">
-                          m@example.com
-                        </SelectItem>
-                        <SelectItem value="m@google.com">
-                          m@google.com
-                        </SelectItem>
-                        <SelectItem value="m@support.com">
-                          m@support.com
-                        </SelectItem>
+                        <div className="w-full max-h-[200px] overflow-y-auto scrollbar">
+                          {membersOptions?.map((option) => (
+                            <SelectItem
+                              key={option.value}
+                              value={option.value}
+                              className="cursor-pointer"
+                            >
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </div>
                       </SelectContent>
                     </Select>
                     <FormMessage />

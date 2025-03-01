@@ -77,7 +77,7 @@ export default function CreateProjectForm({
         queryClient.invalidateQueries({
           queryKey: ["allprojects", workspaceId],
         });
-        
+
         toast({
           title: "Success ",
           description: "Project created successfully",
