@@ -19,6 +19,8 @@ import {
   ProjectByIdPayloadType,
   EditProjectPayloadType,
   CreateTaskPayloadType,
+  AllTaskPayloadType,
+  AllTaskResponseType,
 } from "@/types/api.type";
 
 export const loginMutationFn = async (
@@ -201,6 +203,35 @@ export const createTaskMutationFn = async ({
   return response.data;
 };
 
-export const getAllTasksQueryFn = async () => {};
+export const getAllTasksQueryFn = async ({
+  workspaceId,
+  keyword,
+  projectId,
+  assignedTo,
+  priority,
+  status,
+  dueDate,
+  pageNumber,
+  pageSize
+}: AllTaskPayloadType): Promise<AllTaskResponseType> => {
+  const baseUrl = `/task/workspace/${workspaceId}/all`; 
+
+  const queryParams = new URLSearchParams();
+  if (keyword) queryParams.append("keyword", keyword);
+  if (projectId) queryParams.append("projectId", projectId);
+  if (assignedTo) queryParams.append("assignedTo", assignedTo);
+  if (priority) queryParams.append("priority", priority);
+  if (status) queryParams.append("status", status);
+  if (dueDate) queryParams.append("dueDate", dueDate);
+  if (pageNumber) queryParams.append("pageNumber", pageNumber.toString());
+  if (pageSize) queryParams.append("pageSize", pageSize.toString());
+
+  const url = queryParams.toString()
+    ? `${baseUrl}?${queryParams.toString()}`
+    : baseUrl;
+    
+  const response = await API.get(url);
+  return response.data;
+};
 
 export const deleteTaskMutationFn = async () => {};
