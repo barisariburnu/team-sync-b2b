@@ -1,4 +1,4 @@
-import { z, type ZodObject, type ZodRawShape } from 'zod'
+import type { ZodObject, ZodRawShape, infer as ZodInfer } from 'zod'
 import {
   useForm,
   type UseFormProps,
@@ -9,10 +9,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 export function useZodForm<TSchema extends ZodObject<ZodRawShape>>(
   schema: TSchema,
-  options?: Omit<UseFormProps<z.infer<TSchema>>, 'resolver'>
-): UseFormReturn<z.infer<TSchema>> {
-  return useForm<z.infer<TSchema>>({
-    resolver: zodResolver(schema) as Resolver<z.infer<TSchema>>,
+  options?: Omit<UseFormProps<ZodInfer<TSchema>>, 'resolver'>
+): UseFormReturn<ZodInfer<TSchema>> {
+  return useForm<ZodInfer<TSchema>>({
+    resolver: zodResolver(schema) as Resolver<ZodInfer<TSchema>>,
     ...options,
   })
 }
