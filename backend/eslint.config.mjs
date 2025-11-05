@@ -1,11 +1,11 @@
-import js from '@eslint/js'
-import { defineConfig } from 'eslint/config'
-import tseslintPlugin from '@typescript-eslint/eslint-plugin'
-import tsParser from '@typescript-eslint/parser'
-import security from 'eslint-plugin-security'
-import unusedImports from 'eslint-plugin-unused-imports'
-import globals from 'globals'
-import prettier from 'eslint-config-prettier'
+import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
+import tseslintPlugin from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import security from 'eslint-plugin-security';
+import unusedImports from 'eslint-plugin-unused-imports';
+import globals from 'globals';
+import prettier from 'eslint-config-prettier';
 
 export default defineConfig(
   {
@@ -43,5 +43,5 @@ export default defineConfig(
       '@typescript-eslint/no-explicit-any': 'error',
       'security/detect-object-injection': 'off',
     },
-  }
-)
+  },
+);

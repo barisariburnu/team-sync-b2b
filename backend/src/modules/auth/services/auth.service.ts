@@ -1,6 +1,5 @@
 import jwt, { Secret, SignOptions } from 'jsonwebtoken';
 import { config } from '@config/app.config';
-import { compareValue, hashValue } from '@utils/bcrypt';
 
 export interface AuthPayload {
   id: number | string;

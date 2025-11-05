@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import { type QueryClient } from '@tanstack/react-query'
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
+import * as Sentry from '@sentry/tanstackstart-react'
 import { NavigationProgress } from '@shared/components'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { Toaster } from '@/components/ui/sonner'
 import { GeneralError } from '@/features/errors/general-error'
 import { NotFoundError } from '@/features/errors/not-found-error'
-import * as Sentry from '@sentry/tanstackstart-react'
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient

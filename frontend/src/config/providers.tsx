@@ -1,9 +1,9 @@
 import type { PropsWithChildren } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { ThemeProvider } from '@/context/theme-provider'
-import { FontProvider } from '@/context/font-provider'
-import { DirectionProvider } from '@/context/direction-provider'
 import { queryClient } from '@config/init'
+import { DirectionProvider } from '@/context/direction-provider'
+import { FontProvider } from '@/context/font-provider'
+import { ThemeProvider } from '@/context/theme-provider'
 
 export function AppProviders({ children }: PropsWithChildren) {
   return (

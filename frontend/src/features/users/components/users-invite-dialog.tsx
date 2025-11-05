@@ -1,8 +1,8 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { MailPlus, Send } from 'lucide-react'
 import { showSubmittedData } from '@shared/lib/show-submitted-data'
+import { MailPlus, Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,

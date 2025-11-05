@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { type Table } from '@tanstack/react-table'
+import { sleep } from '@shared/lib/utils'
 import { AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
-import { sleep } from '@shared/lib/utils'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'

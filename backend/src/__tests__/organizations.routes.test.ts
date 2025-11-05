@@ -15,7 +15,7 @@ vi.mock('@modules/organization/services/organizations.service', () => ({
 let app: express.Express;
 let readToken: string;
 let manageToken: string;
-let orgService: any;
+let orgService: typeof import('@modules/organization/services/organizations.service');
 
 beforeAll(async () => {
   process.env.NODE_ENV = 'test';
@@ -44,7 +44,7 @@ beforeAll(async () => {
 
 describe('Organizations routes', () => {
   it('GET /organizations returns list with proper permission', async () => {
-    orgService.listOrganizations.mockResolvedValueOnce([
+    vi.mocked(orgService).listOrganizations.mockResolvedValueOnce([
       { id: 1, name: 'Org A', metadata: null },
       { id: 2, name: 'Org B', metadata: null },
     ]);
@@ -65,7 +65,7 @@ describe('Organizations routes', () => {
   });
 
   it('GET /organizations/:id returns 404 when not found', async () => {
-    orgService.getOrganizationById.mockResolvedValueOnce(null);
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce(null);
     const res = await request(app)
       .get('/api/v1/organizations/999')
       .set('Authorization', `Bearer ${readToken}`);
@@ -84,7 +84,7 @@ describe('Organizations routes', () => {
   });
 
   it('POST /organizations creates organization with valid body', async () => {
-    orgService.createOrganization.mockResolvedValueOnce({
+    vi.mocked(orgService).createOrganization.mockResolvedValueOnce({
       id: 10,
       name: 'New Org',
       metadata: { a: 1 },
@@ -107,7 +107,7 @@ describe('Organizations routes', () => {
   });
 
   it('PATCH /organizations/:id returns 404 when not found', async () => {
-    orgService.getOrganizationById.mockResolvedValueOnce(null);
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce(null);
     const res = await request(app)
       .patch('/api/v1/organizations/123')
       .set('Authorization', `Bearer ${manageToken}`)
@@ -117,12 +117,12 @@ describe('Organizations routes', () => {
   });
 
   it('PATCH /organizations/:id updates existing organization', async () => {
-    orgService.getOrganizationById.mockResolvedValueOnce({
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce({
       id: 5,
       name: 'Old Name',
       metadata: null,
     });
-    orgService.updateOrganization.mockResolvedValueOnce({
+    vi.mocked(orgService).updateOrganization.mockResolvedValueOnce({
       id: 5,
       name: 'Updated Name',
       metadata: null,
@@ -144,7 +144,7 @@ describe('Organizations routes', () => {
   });
 
   it('DELETE /organizations/:id returns 404 when not found', async () => {
-    orgService.getOrganizationById.mockResolvedValueOnce(null);
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce(null);
     const res = await request(app)
       .delete('/api/v1/organizations/321')
       .set('Authorization', `Bearer ${manageToken}`);
@@ -153,12 +153,12 @@ describe('Organizations routes', () => {
   });
 
   it('DELETE /organizations/:id returns 204 when deleted', async () => {
-    orgService.getOrganizationById.mockResolvedValueOnce({
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce({
       id: 7,
       name: 'Del Org',
       metadata: null,
     });
-    orgService.deleteOrganization.mockResolvedValueOnce(true);
+    vi.mocked(orgService).deleteOrganization.mockResolvedValueOnce(true);
     const res = await request(app)
       .delete('/api/v1/organizations/7')
       .set('Authorization', `Bearer ${manageToken}`);

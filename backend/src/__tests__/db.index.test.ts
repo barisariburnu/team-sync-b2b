@@ -42,12 +42,12 @@ describe('db/index', () => {
     const drizzleMod = await import('drizzle-orm/postgres-js');
     const mockedPostgres = postgresMod.default as unknown as ReturnType<typeof vi.fn>;
     const mockedDrizzle = drizzleMod.drizzle as unknown as ReturnType<typeof vi.fn>;
-    expect((mockedPostgres as any).mock.calls.length).toBeGreaterThanOrEqual(1);
-    expect((mockedDrizzle as any).mock.calls.length).toBeGreaterThanOrEqual(1);
+    expect(mockedPostgres.mock.calls.length).toBeGreaterThanOrEqual(1);
+    expect(mockedDrizzle.mock.calls.length).toBeGreaterThanOrEqual(1);
 
     const db2 = mod.getDb();
     expect(db2).toEqual({ __db: true });
-    expect((mockedPostgres as any).mock.calls.length).toBeGreaterThanOrEqual(1);
-    expect((mockedDrizzle as any).mock.calls.length).toBeGreaterThanOrEqual(1);
+    expect(mockedPostgres.mock.calls.length).toBeGreaterThanOrEqual(1);
+    expect(mockedDrizzle.mock.calls.length).toBeGreaterThanOrEqual(1);
   });
 });

@@ -1,6 +1,6 @@
+import { type JSX } from 'react'
 import { startSpan, captureException } from '@shared/lib/sentry'
 import { Button } from '@/components/ui/button'
-import { type JSX } from 'react'
 
 export function SentryDemo(): JSX.Element {
   async function handleSpanDemo(): Promise<void> {

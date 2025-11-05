@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { Check, Moon, Sun } from 'lucide-react'
 import { cn } from '@shared/lib/utils'
+import { Check, Moon, Sun } from 'lucide-react'
 import { useTheme } from '@/context/theme-provider'
 import { Button } from '@/components/ui/button'
 import {

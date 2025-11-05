@@ -1,5 +1,5 @@
-import { Logo } from '@/assets/logo'
 import { cn } from '@shared/lib/utils'
+import { Logo } from '@/assets/logo'
 import dashboardDark from './assets/dashboard-dark.png'
 import dashboardLight from './assets/dashboard-light.png'
 import { UserAuthForm } from './components/user-auth-form'

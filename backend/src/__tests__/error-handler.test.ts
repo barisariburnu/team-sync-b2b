@@ -1,20 +1,22 @@
 import { describe, it, expect } from 'vitest';
+import type { Request, Response, NextFunction } from 'express';
 import { errorHandler } from '@middlewares/error-handler.middleware';
 import { HTTP_STATUS } from '@config/http.config';
 import { z, ZodError } from 'zod';
-import { AppError, ForbiddenException } from '@utils/app-error';
+import { ForbiddenException } from '@utils/app-error';
 
 const mockRes = () => {
-  const res: any = {};
-  res.statusCode = 0;
-  res.body = null;
-  res.status = (code: number) => {
-    res.statusCode = code;
-    return res;
-  };
-  res.json = (payload: any) => {
-    res.body = payload;
-    return res;
+  const res = {
+    statusCode: 0,
+    body: null as null | { message?: string; errors?: unknown; [k: string]: unknown },
+    status(code: number) {
+      this.statusCode = code;
+      return this;
+    },
+    json(payload: { message?: string; errors?: unknown; [k: string]: unknown }) {
+      this.body = payload;
+      return this;
+    },
   };
   return res;
 };
@@ -22,9 +24,15 @@ const mockRes = () => {
 describe('errorHandler middleware', () => {
   it('handles SyntaxError as 400', () => {
     const res = mockRes();
-    errorHandler(new SyntaxError('bad json'), { path: '/x' } as any, res as any, (() => {}) as any);
+    const next: NextFunction = () => {};
+    errorHandler(
+      new SyntaxError('bad json'),
+      { path: '/x' } as unknown as Request,
+      res as unknown as Response,
+      next,
+    );
     expect(res.statusCode).toBe(HTTP_STATUS.BAD_REQUEST);
-    expect(res.body.message).toContain('Invalid JSON');
+    expect(res.body?.message).toContain('Invalid JSON');
   });
 
   it('handles ZodError as 400', () => {
@@ -36,23 +44,31 @@ describe('errorHandler middleware', () => {
     } catch (e) {
       err = e as ZodError;
     }
-    errorHandler(err!, { path: '/x' } as any, res as any, (() => {}) as any);
+    const next: NextFunction = () => {};
+    errorHandler(err!, { path: '/x' } as unknown as Request, res as unknown as Response, next);
     expect(res.statusCode).toBe(HTTP_STATUS.BAD_REQUEST);
-    expect(res.body.message).toBe('Validation error');
-    expect(Array.isArray(res.body.errors)).toBe(true);
+    expect(res.body?.message).toBe('Validation error');
+    expect(Array.isArray(res.body?.errors)).toBe(true);
   });
 
   it('handles AppError with its status', () => {
     const res = mockRes();
     const err = new ForbiddenException('Denied');
-    errorHandler(err, { path: '/x' } as any, res as any, (() => {}) as any);
+    const next: NextFunction = () => {};
+    errorHandler(err, { path: '/x' } as unknown as Request, res as unknown as Response, next);
     expect(res.statusCode).toBe(HTTP_STATUS.FORBIDDEN);
-    expect(res.body.message).toBe('Denied');
+    expect(res.body?.message).toBe('Denied');
   });
 
   it('handles unknown errors as 500', () => {
     const res = mockRes();
-    errorHandler(new Error('oops'), { path: '/x' } as any, res as any, (() => {}) as any);
+    const next: NextFunction = () => {};
+    errorHandler(
+      new Error('oops'),
+      { path: '/x' } as unknown as Request,
+      res as unknown as Response,
+      next,
+    );
     expect(res.statusCode).toBe(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   });
 });

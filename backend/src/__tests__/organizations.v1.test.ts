@@ -12,7 +12,7 @@ vi.mock('@modules/organization/services/organizations.service', () => {
   };
 });
 
-let orgService: any;
+let orgService: typeof import('@modules/organization/services/organizations.service');
 
 let app: import('express').Express;
 let adminToken: string;
@@ -54,7 +54,7 @@ describe('Organizations v1', () => {
   });
 
   it('lists organizations with read permission', async () => {
-    (orgService.listOrganizations as any).mockResolvedValueOnce([]);
+    vi.mocked(orgService).listOrganizations.mockResolvedValueOnce([]);
     const res = await request(app)
       .get('/api/v1/organizations')
       .set('Authorization', `Bearer ${readToken}`);
@@ -71,7 +71,7 @@ describe('Organizations v1', () => {
   });
 
   it('creates organization with manage permission', async () => {
-    (orgService.createOrganization as any).mockResolvedValueOnce({ id: 1, name: 'Test Org' });
+    vi.mocked(orgService).createOrganization.mockResolvedValueOnce({ id: 1, name: 'Test Org' });
     const res = await request(app)
       .post('/api/v1/organizations')
       .set('Authorization', `Bearer ${adminToken}`)
@@ -97,7 +97,7 @@ describe('Organizations v1', () => {
   });
 
   it('update returns 404 when not found', async () => {
-    (orgService.getOrganizationById as any).mockResolvedValueOnce(null);
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce(null);
     const res = await request(app)
       .patch('/api/v1/organizations/999999')
       .set('Authorization', `Bearer ${adminToken}`)
@@ -106,7 +106,7 @@ describe('Organizations v1', () => {
   });
 
   it('get by id returns 200 when found', async () => {
-    (orgService.getOrganizationById as any).mockResolvedValueOnce({ id: 1, name: 'Found Org' });
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce({ id: 1, name: 'Found Org' });
     const res = await request(app)
       .get('/api/v1/organizations/1')
       .set('Authorization', `Bearer ${readToken}`);
@@ -115,8 +115,8 @@ describe('Organizations v1', () => {
   });
 
   it('updates organization successfully', async () => {
-    (orgService.getOrganizationById as any).mockResolvedValueOnce({ id: 1, name: 'Found Org' });
-    (orgService.updateOrganization as any).mockResolvedValueOnce({ id: 1, name: 'Updated' });
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce({ id: 1, name: 'Found Org' });
+    vi.mocked(orgService).updateOrganization.mockResolvedValueOnce({ id: 1, name: 'Updated' });
     const res = await request(app)
       .patch('/api/v1/organizations/1')
       .set('Authorization', `Bearer ${adminToken}`)
@@ -126,8 +126,8 @@ describe('Organizations v1', () => {
   });
 
   it('deletes organization successfully', async () => {
-    (orgService.getOrganizationById as any).mockResolvedValueOnce({ id: 1, name: 'Found Org' });
-    (orgService.deleteOrganization as any).mockResolvedValueOnce(true);
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce({ id: 1, name: 'Found Org' });
+    vi.mocked(orgService).deleteOrganization.mockResolvedValueOnce(true);
     const res = await request(app)
       .delete('/api/v1/organizations/1')
       .set('Authorization', `Bearer ${adminToken}`);
@@ -135,7 +135,7 @@ describe('Organizations v1', () => {
   });
 
   it('delete returns 404 when not found', async () => {
-    (orgService.getOrganizationById as any).mockResolvedValueOnce(null);
+    vi.mocked(orgService).getOrganizationById.mockResolvedValueOnce(null);
     const res = await request(app)
       .delete('/api/v1/organizations/999999')
       .set('Authorization', `Bearer ${adminToken}`);

@@ -1,10 +1,12 @@
 import express from 'express';
 import request from 'supertest';
 import jwt from 'jsonwebtoken';
+import type { RequestHandler } from 'express';
 import { describe, it, expect, beforeAll } from 'vitest';
+
 let app: express.Express;
 let token: string;
-let authenticateJWT: any;
+let authenticateJWT: RequestHandler;
 
 beforeAll(async () => {
   process.env.JWT_SECRET = process.env.JWT_SECRET || 'test_secret';

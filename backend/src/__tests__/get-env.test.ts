@@ -3,7 +3,7 @@ import { getEnv } from '@utils/get-env';
 
 describe('getEnv util', () => {
   beforeEach(() => {
-    delete (process.env as any).FOO;
+    delete process.env.FOO;
   });
 
   it('returns default when env missing', () => {
@@ -12,7 +12,7 @@ describe('getEnv util', () => {
   });
 
   it('returns env value when present', () => {
-    (process.env as any).FOO = 'baz';
+    process.env.FOO = 'baz';
     const v = getEnv('FOO', 'bar');
     expect(v).toBe('baz');
   });

@@ -1,8 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { drizzle } from 'drizzle-orm/postgres-js';
+import type { Organization } from '../modules/organization/services/organizations.service';
 
 // Create a mutable stub for DB that we can tailor per test
 type Options = { selectMode?: 'simple' | 'byId' };
-const makeDbStub = (rows: any[] = [], options: Options = { selectMode: 'simple' }) => {
+const makeDbStub = (
+  rows: Organization[] = [],
+  options: Options = { selectMode: 'simple' },
+) => {
   const selectChain =
     options.selectMode === 'byId'
       ? {
@@ -37,7 +42,7 @@ const makeDbStub = (rows: any[] = [], options: Options = { selectMode: 'simple' 
     insert: vi.fn(() => insertChain),
     update: vi.fn(() => updateChain),
     delete: vi.fn(() => deleteChain),
-  } as any;
+  } as unknown as ReturnType<typeof drizzle>;
 };
 
 // Mock @db/index module and control getDb return per test
@@ -54,64 +59,60 @@ beforeEach(() => {
 
 describe('organizations.service unit', () => {
   it('listOrganizations returns array', async () => {
-    const rows = [
+    const rows: Organization[] = [
       { id: 1, name: 'Org A', metadata: null },
       { id: 2, name: 'Org B', metadata: null },
     ];
-    vi.mocked(dbModule.getDb as any).mockReturnValue(
-      makeDbStub(rows, { selectMode: 'simple' }) as any,
-    );
+    vi.mocked(dbModule.getDb).mockReturnValue(makeDbStub(rows, { selectMode: 'simple' }));
 
     const result = await service.listOrganizations();
     expect(result).toEqual(rows);
   });
 
   it('getOrganizationById returns first row when exists', async () => {
-    const rows = [{ id: 10, name: 'X', metadata: null }];
-    vi.mocked(dbModule.getDb as any).mockReturnValue(
-      makeDbStub(rows, { selectMode: 'byId' }) as any,
-    );
+    const rows: Organization[] = [{ id: 10, name: 'X', metadata: null }];
+    vi.mocked(dbModule.getDb).mockReturnValue(makeDbStub(rows, { selectMode: 'byId' }));
 
     const result = await service.getOrganizationById(10);
     expect(result).toEqual(rows[0]);
   });
 
   it('getOrganizationById returns null when not found', async () => {
-    vi.mocked(dbModule.getDb as any).mockReturnValue(makeDbStub([], { selectMode: 'byId' }) as any);
+    vi.mocked(dbModule.getDb).mockReturnValue(makeDbStub([], { selectMode: 'byId' }));
     const result = await service.getOrganizationById(999);
     expect(result).toBeNull();
   });
 
   it('createOrganization returns inserted row', async () => {
-    const rows = [{ id: 7, name: 'New', metadata: { a: 1 } }];
-    vi.mocked(dbModule.getDb as any).mockReturnValue(makeDbStub(rows) as any);
+    const rows: Organization[] = [{ id: 7, name: 'New', metadata: { a: 1 } }];
+    vi.mocked(dbModule.getDb).mockReturnValue(makeDbStub(rows));
 
     const result = await service.createOrganization({ name: 'New', metadata: { a: 1 } });
     expect(result).toEqual(rows[0]);
   });
 
   it('updateOrganization returns updated row', async () => {
-    const rows = [{ id: 7, name: 'Updated', metadata: null }];
-    vi.mocked(dbModule.getDb as any).mockReturnValue(makeDbStub(rows) as any);
+    const rows: Organization[] = [{ id: 7, name: 'Updated', metadata: null }];
+    vi.mocked(dbModule.getDb).mockReturnValue(makeDbStub(rows));
 
     const result = await service.updateOrganization(7, { name: 'Updated' });
     expect(result).toEqual(rows[0]);
   });
 
   it('updateOrganization returns null when no rows', async () => {
-    vi.mocked(dbModule.getDb as any).mockReturnValue(makeDbStub([]) as any);
+    vi.mocked(dbModule.getDb).mockReturnValue(makeDbStub([]));
     const result = await service.updateOrganization(7, { name: 'Updated' });
     expect(result).toBeNull();
   });
 
   it('deleteOrganization returns true when rows affected', async () => {
-    vi.mocked(dbModule.getDb as any).mockReturnValue(makeDbStub([{ id: 1 }]) as any);
+    vi.mocked(dbModule.getDb).mockReturnValue(makeDbStub([{ id: 1, name: 'X', metadata: null }]));
     const result = await service.deleteOrganization(1);
     expect(result).toBe(true);
   });
 
   it('deleteOrganization returns false when no rows', async () => {
-    vi.mocked(dbModule.getDb as any).mockReturnValue(makeDbStub([]) as any);
+    vi.mocked(dbModule.getDb).mockReturnValue(makeDbStub([]));
     const result = await service.deleteOrganization(1);
     expect(result).toBe(false);
   });

@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavigationProgress } from '@shared/components/navigation-progress'
 import { render, waitFor } from '@testing-library/react'
 import { describe, it, beforeEach, expect, vi } from 'vitest'
 
@@ -13,14 +14,15 @@ const continuousStart = vi.fn()
 const complete = vi.fn()
 
 vi.mock('react-top-loading-bar', () => {
-  const MockLoadingBar = React.forwardRef<LoadingBarHandle, Record<string, never>>((_props, ref) => {
+  const MockLoadingBar = React.forwardRef<
+    LoadingBarHandle,
+    Record<string, never>
+  >((_props, ref) => {
     React.useImperativeHandle(ref, () => ({ continuousStart, complete }))
     return React.createElement('div', { 'data-testid': 'loading-bar' })
   })
   return { default: MockLoadingBar }
 })
-
-import { NavigationProgress } from '@shared/components/navigation-progress'
 
 describe('NavigationProgress', () => {
   beforeEach(() => {

@@ -5,9 +5,10 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig } from 'eslint/config'
 import tseslint from 'typescript-eslint'
+import unusedImports from 'eslint-plugin-unused-imports'
 
 export default defineConfig(
-  { ignores: ['dist', 'src/components/ui'] },
+  { ignores: ['dist', 'src/components/ui', 'src/routeTree.gen.ts'] },
   {
     extends: [
       js.configs.recommended,
@@ -22,6 +23,7 @@ export default defineConfig(
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'unused-imports': unusedImports,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -43,6 +45,8 @@ export default defineConfig(
           ignoreRestSiblings: true,
         },
       ],
+      '@typescript-eslint/no-explicit-any': 'error',
+      'unused-imports/no-unused-imports': 'error',
       // Enforce type-only imports for TypeScript types
       '@typescript-eslint/consistent-type-imports': [
         'error',
@@ -55,8 +59,7 @@ export default defineConfig(
       // Prevent duplicate imports from the same module
       'no-duplicate-imports': 'error',
     },
-  }
-  ,
+  },
   {
     files: ['**/*.test.ts', '**/*.test.tsx', '**/__tests__/**/*'],
     languageOptions: {

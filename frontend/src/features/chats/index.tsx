@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Fragment } from 'react/jsx-runtime'
 import { format } from 'date-fns'
+import { cn } from '@shared/lib/utils'
 import {
   ArrowLeft,
   MoreVertical,
@@ -14,7 +15,6 @@ import {
   Video,
   MessagesSquare,
 } from 'lucide-react'
-import { cn } from '@shared/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'

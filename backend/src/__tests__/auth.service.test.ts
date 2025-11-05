@@ -25,10 +25,17 @@ describe('auth.service', () => {
     };
     const token = authService.signAccessToken(payload);
     expect(typeof token).toBe('string');
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-    expect(decoded.id).toBe(123);
-    expect(decoded.email).toBe('user@example.com');
-    expect(decoded.roles).toContain('user');
-    expect(decoded.permissions).toContain('read:me');
+    interface AccessTokenPayload {
+      id: number;
+      email: string;
+      roles: string[];
+      permissions: string[];
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    const accessTokenPayload = decoded as unknown as AccessTokenPayload;
+    expect(accessTokenPayload.id).toBe(123);
+    expect(accessTokenPayload.email).toBe('user@example.com');
+    expect(accessTokenPayload.roles).toContain('user');
+    expect(accessTokenPayload.permissions).toContain('read:me');
   });
 });

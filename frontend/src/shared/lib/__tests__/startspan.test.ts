@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
 import * as Sentry from '@sentry/tanstackstart-react'
 import { startSpan } from '@shared/lib/sentry'
+import { describe, it, expect, vi } from 'vitest'
 
 vi.mock('@sentry/tanstackstart-react', async () => {
   const actual = await vi.importActual<
@@ -20,10 +20,13 @@ describe('startSpan wrapper', () => {
   })
 
   it('delegates to Sentry and returns async result', async () => {
-    const result = await startSpan({ name: 'async-op', op: 'test' }, async () => {
-      await new Promise((r) => setTimeout(r, 10))
-      return 'ok'
-    })
+    const result = await startSpan(
+      { name: 'async-op', op: 'test' },
+      async () => {
+        await new Promise((r) => setTimeout(r, 10))
+        return 'ok'
+      }
+    )
     expect(result).toBe('ok')
     expect(Sentry.startSpan).toHaveBeenCalled()
   })

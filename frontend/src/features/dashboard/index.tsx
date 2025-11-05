@@ -1,3 +1,4 @@
+import { SentryDemo } from '@shared/components/sentry-demo'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -17,7 +18,6 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Analytics } from './components/analytics'
 import { Overview } from './components/overview'
 import { RecentSales } from './components/recent-sales'
-import { SentryDemo } from '@shared/components/sentry-demo'
 
 export function Dashboard() {
   return (

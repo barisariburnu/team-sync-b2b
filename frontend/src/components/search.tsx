@@ -1,8 +1,8 @@
-import { SearchIcon } from 'lucide-react'
+import { startSpan } from '@shared/lib/sentry'
 import { cn } from '@shared/lib/utils'
+import { SearchIcon } from 'lucide-react'
 import { useSearch } from '@/context/search-provider'
 import { Button } from './ui/button'
-import { startSpan } from '@shared/lib/sentry'
 
 type SearchProps = {
   className?: string
@@ -24,7 +24,11 @@ export function Search({
       )}
       onClick={() =>
         startSpan(
-          { name: 'Search Open', op: 'ui.click', attributes: { area: 'search' } },
+          {
+            name: 'Search Open',
+            op: 'ui.click',
+            attributes: { area: 'search' },
+          },
           () => setOpen(true)
         )
       }

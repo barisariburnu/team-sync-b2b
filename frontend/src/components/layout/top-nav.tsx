@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
-import { Menu } from 'lucide-react'
 import { cn } from '@shared/lib/utils'
+import { Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,

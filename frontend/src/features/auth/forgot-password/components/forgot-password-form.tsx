@@ -3,9 +3,9 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
+import { sleep, cn } from '@shared/lib/utils'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { sleep, cn } from '@shared/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   Form,

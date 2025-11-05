@@ -36,7 +36,7 @@ export const authenticateJWT = (req: Request, _res: Response, next: NextFunction
       permissions: payload.permissions,
     };
     next();
-  } catch (err) {
+  } catch {
     return next(new UnauthorizedException('Invalid or expired token'));
   }
 };

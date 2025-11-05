@@ -2,6 +2,7 @@ import express from 'express';
 import request from 'supertest';
 import { describe, it, expect, beforeAll } from 'vitest';
 import { requirePermission } from '@middlewares/permission.middleware';
+import type { AuthUser } from '@middlewares/auth.middleware';
 
 let app: express.Express;
 
@@ -9,7 +10,8 @@ beforeAll(() => {
   app = express();
   // Inject a fake user before permission check
   app.use((req, _res, next) => {
-    req.user = { id: 1, email: 'a@b.com', permissions: ['read:things'] } as any;
+    const user: AuthUser = { id: 1, email: 'a@b.com', permissions: ['read:things'] };
+    req.user = user;
     next();
   });
 
