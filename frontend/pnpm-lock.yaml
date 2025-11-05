@@ -147,9 +147,6 @@ importers:
       '@faker-js/faker':
         specifier: ^10.1.0
         version: 10.1.0
-      '@sentry/react':
-        specifier: ^10.22.0
-        version: 10.22.0(react@19.2.0)
       '@sentry/vite-plugin':
         specifier: ^4.6.0
         version: 4.6.0

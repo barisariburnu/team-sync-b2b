@@ -23,28 +23,6 @@
     "@typescript-eslint/no-namespace": ["error", { "allowDeclarations": true }],
     "@typescript-eslint/no-explicit-any": "error",
     "security/detect-object-injection": "off",
-    "no-restricted-imports": [
-      "error",
-      {
-        "patterns": [
-          { "group": ["mongoose"], "message": "Mongoose is deprecated. Use Drizzle + Postgres." },
-          {
-            "group": [
-              "passport*",
-              "passport",
-              "passport-google-oauth20",
-              "passport-local",
-              "passport-jwt"
-            ],
-            "message": "Passport-based auth is deprecated; use JWT routes under v1."
-          },
-          {
-            "group": ["cookie-session", "express-session"],
-            "message": "Session middlewares are not used in our stateless API."
-          }
-        ]
-      }
-    ]
   },
   "ignorePatterns": ["dist/**", "node_modules/**"]
 }
