@@ -4,6 +4,7 @@ import axios, {
   type InternalAxiosRequestConfig,
   type AxiosResponse,
 } from 'axios'
+import { getCookie } from '@shared/lib/cookies'
 import { captureException } from '@shared/lib/sentry'
 import { useAuthStore } from '@/stores/auth-store'
 import type { ApiError } from './types'
@@ -25,6 +26,14 @@ http.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+  // Attach CSRF token from cookie if available
+  const csrf = getCookie('csrf_token') || getCookie('XSRF-TOKEN')
+  if (csrf) {
+    config.headers['X-CSRF-Token'] = csrf
+  }
+  // Additional safety headers
+  config.headers['Cache-Control'] = 'no-store'
+  config.headers['Pragma'] = 'no-cache'
   return config
 })
 

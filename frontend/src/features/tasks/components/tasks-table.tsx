@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getRouteApi } from '@tanstack/react-router'
 import {
   type SortingState,
@@ -12,6 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import { useTableUrlState } from '@shared/hooks/use-table-url-state'
 import { cn } from '@shared/lib/utils'
 import {
@@ -104,6 +105,21 @@ export function TasksTable({ data }: DataTableProps) {
     ensurePageInRange(pageCount)
   }, [pageCount, ensurePageInRange])
 
+  const parentRef = useRef<HTMLDivElement>(null)
+  const rows = table.getRowModel().rows
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 44,
+    overscan: 8,
+    getItemKey: (index) => rows[index]?.id,
+  })
+  const virtualRows = rowVirtualizer.getVirtualItems()
+  const paddingTop = virtualRows.length > 0 ? virtualRows[0].start : 0
+  const paddingBottom =
+    rowVirtualizer.getTotalSize() -
+    (virtualRows.length > 0 ? virtualRows[virtualRows.length - 1].end : 0)
+
   return (
     <div
       className={cn(
@@ -128,7 +144,8 @@ export function TasksTable({ data }: DataTableProps) {
         ]}
       />
       <div className='overflow-hidden rounded-md border'>
-        <Table>
+        <div ref={parentRef} className='max-h-[600px] overflow-auto'>
+          <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -154,41 +171,54 @@ export function TasksTable({ data }: DataTableProps) {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cn(
-                        cell.column.columnDef.meta?.className,
-                        cell.column.columnDef.meta?.tdClassName
-                      )}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+            <TableBody>
+              {rows.length ? (
+                <>
+                  {paddingTop > 0 && (
+                    <TableRow style={{ height: `${paddingTop}px` }} />
+                  )}
+                  {virtualRows.map((virtualRow) => {
+                    const row = rows[virtualRow.index]
+                    return (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && 'selected'}
+                        style={{ height: `${virtualRow.size}px` }}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell
+                            key={cell.id}
+                            className={cn(
+                              cell.column.columnDef.meta?.className,
+                              cell.column.columnDef.meta?.tdClassName
+                            )}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    )
+                  })}
+                  {paddingBottom > 0 && (
+                    <TableRow style={{ height: `${paddingBottom}px` }} />
+                  )}
+                </>
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className='h-24 text-center'
+                  >
+                    No results.
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />

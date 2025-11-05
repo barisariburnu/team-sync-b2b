@@ -1,9 +1,12 @@
 import { useState } from 'react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from '@tanstack/react-router'
-import { sleep, cn } from '@shared/lib/utils'
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordFormValues,
+} from '@/schemas/auth'
+import { authService } from '@/services/auth'
+import { useZodForm } from '@shared/hooks/use-zod-form'
+import { cn } from '@shared/lib/utils'
 import { ArrowRight, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -17,11 +20,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
-const formSchema = z.object({
-  email: z.email({
-    error: (iss) => (iss.input === '' ? 'Please enter your email' : undefined),
-  }),
-})
+const formSchema = forgotPasswordSchema
 
 export function ForgotPasswordForm({
   className,
@@ -30,25 +29,29 @@ export function ForgotPasswordForm({
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useZodForm(formSchema, {
     defaultValues: { email: '' },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: ForgotPasswordFormValues) {
     setIsLoading(true)
-    // eslint-disable-next-line no-console
-    console.log(data)
-
-    toast.promise(sleep(2000), {
-      loading: 'Sending email...',
-      success: () => {
+    const promise: Promise<string> = (async () => {
+      await authService.forgotPassword({ email: data.email })
+      form.reset()
+      navigate({ to: '/otp' })
+      return `E-posta ${data.email} adresine gönderildi`
+    })()
+    toast.promise(promise, {
+      loading: 'E-posta gönderiliyor...',
+      success: (msg: string) => {
         setIsLoading(false)
-        form.reset()
-        navigate({ to: '/otp' })
-        return `Email sent to ${data.email}`
+        return msg
       },
-      error: 'Error',
+      error: (err: unknown) => {
+        setIsLoading(false)
+        const message = (err as Error)?.message || 'Henüz uygulanmadı'
+        return message
+      },
     })
   }
 
@@ -64,16 +67,16 @@ export function ForgotPasswordForm({
           name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>E-posta</FormLabel>
               <FormControl>
-                <Input placeholder='name@example.com' {...field} />
+                <Input placeholder='ornek@eposta.com' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button className='mt-2' disabled={isLoading}>
-          Continue
+          Devam et
           {isLoading ? <Loader2 className='animate-spin' /> : <ArrowRight />}
         </Button>
       </form>

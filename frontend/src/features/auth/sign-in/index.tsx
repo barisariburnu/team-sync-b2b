@@ -17,10 +17,10 @@ export function SignIn() {
     <AuthLayout>
       <Card className='gap-4'>
         <CardHeader>
-          <CardTitle className='text-lg tracking-tight'>Sign in</CardTitle>
+          <CardTitle className='text-lg tracking-tight'>Giriş yap</CardTitle>
           <CardDescription>
-            Enter your email and password below to <br />
-            log into your account
+            E-posta ve şifrenizi girerek <br />
+            hesabınıza giriş yapın.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -28,21 +28,21 @@ export function SignIn() {
         </CardContent>
         <CardFooter>
           <p className='text-muted-foreground px-8 text-center text-sm'>
-            By clicking sign in, you agree to our{' '}
+            Giriş yaparak{' '}
             <a
               href='/terms'
               className='hover:text-primary underline underline-offset-4'
             >
-              Terms of Service
+              Hizmet Şartları
             </a>{' '}
-            and{' '}
+            ve{' '}
             <a
               href='/privacy'
               className='hover:text-primary underline underline-offset-4'
             >
-              Privacy Policy
+              Gizlilik Politikası
             </a>
-            .
+            'nı kabul etmiş olursunuz.
           </p>
         </CardFooter>
       </Card>

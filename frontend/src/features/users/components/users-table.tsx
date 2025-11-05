@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   type SortingState,
   type VisibilityState,
@@ -16,6 +16,7 @@ import {
   useTableUrlState,
 } from '@shared/hooks/use-table-url-state'
 import { cn } from '@shared/lib/utils'
+import { useVirtualizer } from '@tanstack/react-virtual'
 import {
   Table,
   TableBody,
@@ -95,6 +96,21 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
     ensurePageInRange(table.getPageCount())
   }, [table, ensurePageInRange])
 
+  const parentRef = useRef<HTMLDivElement>(null)
+  const rows = table.getRowModel().rows
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 44,
+    overscan: 8,
+    getItemKey: (index) => rows[index]?.id,
+  })
+  const virtualRows = rowVirtualizer.getVirtualItems()
+  const paddingTop = virtualRows.length > 0 ? virtualRows[0].start : 0
+  const paddingBottom =
+    rowVirtualizer.getTotalSize() -
+    (virtualRows.length > 0 ? virtualRows[virtualRows.length - 1].end : 0)
+
   return (
     <div
       className={cn(
@@ -125,70 +141,84 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
         ]}
       />
       <div className='overflow-hidden rounded-md border'>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className='group/row'>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className={cn(
-                        'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                        header.column.columnDef.meta?.className,
-                        header.column.columnDef.meta?.thClassName
-                      )}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  className='group/row'
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={cn(
-                        'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
-                        cell.column.columnDef.meta?.className,
-                        cell.column.columnDef.meta?.tdClassName
-                      )}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+        <div ref={parentRef} className='max-h-[600px] overflow-auto'>
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className='group/row'>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className={cn(
+                          'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
+                          header.column.columnDef.meta?.className,
+                          header.column.columnDef.meta?.thClassName
+                        )}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    )
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {rows.length ? (
+                <>
+                  {paddingTop > 0 && (
+                    <TableRow style={{ height: `${paddingTop}px` }} />
+                  )}
+                  {virtualRows.map((virtualRow) => {
+                    const row = rows[virtualRow.index]
+                    return (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && 'selected'}
+                        className='group/row'
+                        style={{ height: `${virtualRow.size}px` }}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell
+                            key={cell.id}
+                            className={cn(
+                              'bg-background group-hover/row:bg-muted group-data-[state=selected]/row:bg-muted',
+                              cell.column.columnDef.meta?.className,
+                              cell.column.columnDef.meta?.tdClassName
+                            )}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    )
+                  })}
+                  {paddingBottom > 0 && (
+                    <TableRow style={{ height: `${paddingBottom}px` }} />
+                  )}
+                </>
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className='h-24 text-center'
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />

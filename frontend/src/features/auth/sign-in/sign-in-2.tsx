@@ -16,29 +16,29 @@ export function SignIn2() {
         </div>
         <div className='mx-auto flex w-full max-w-sm flex-col justify-center space-y-2'>
           <div className='flex flex-col space-y-2 text-start'>
-            <h2 className='text-lg font-semibold tracking-tight'>Sign in</h2>
+            <h2 className='text-lg font-semibold tracking-tight'>Giriş yap</h2>
             <p className='text-muted-foreground text-sm'>
-              Enter your email and password below <br />
-              to log into your account
+              E-posta ve şifrenizi girerek <br />
+              hesabınıza giriş yapın.
             </p>
           </div>
           <UserAuthForm />
           <p className='text-muted-foreground px-8 text-center text-sm'>
-            By clicking sign in, you agree to our{' '}
+            Giriş yaparak{' '}
             <a
               href='/terms'
               className='hover:text-primary underline underline-offset-4'
             >
-              Terms of Service
+              Hizmet Şartları
             </a>{' '}
-            and{' '}
+            ve{' '}
             <a
               href='/privacy'
               className='hover:text-primary underline underline-offset-4'
             >
-              Privacy Policy
+              Gizlilik Politikası
             </a>
-            .
+            'nı kabul etmiş olursunuz.
           </p>
         </div>
       </div>

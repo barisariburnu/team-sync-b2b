@@ -16,11 +16,11 @@ export function ForgotPassword() {
       <Card className='gap-4'>
         <CardHeader>
           <CardTitle className='text-lg tracking-tight'>
-            Forgot Password
+            Şifre sıfırlama
           </CardTitle>
           <CardDescription>
-            Enter your registered email and <br /> we will send you a link to
-            reset your password.
+            Kayıtlı e-posta adresinizi girin; <br /> size şifre sıfırlama
+            bağlantısı gönderelim.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -28,12 +28,12 @@ export function ForgotPassword() {
         </CardContent>
         <CardFooter>
           <p className='text-muted-foreground mx-auto px-8 text-center text-sm text-balance'>
-            Don't have an account?{' '}
+            Hesabınız yok mu?{' '}
             <Link
               to='/sign-up'
               className='hover:text-primary underline underline-offset-4'
             >
-              Sign up
+              Kaydol
             </Link>
             .
           </p>

@@ -137,3 +137,4 @@ dist
 
 # env
 backend/.env
+client

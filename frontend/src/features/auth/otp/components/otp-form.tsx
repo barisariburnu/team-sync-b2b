@@ -1,8 +1,8 @@
 import { useState, type HTMLAttributes } from 'react'
-import { z } from 'zod'
-import { useForm, useWatch } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useWatch } from 'react-hook-form'
 import { useNavigate } from '@tanstack/react-router'
+import { otpSchema, type OtpFormValues } from '@/schemas/auth'
+import { useZodForm } from '@shared/hooks/use-zod-form'
 import { showSubmittedData } from '@shared/lib/show-submitted-data'
 import { cn } from '@shared/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -21,12 +21,7 @@ import {
   InputOTPSeparator,
 } from '@/components/ui/input-otp'
 
-const formSchema = z.object({
-  otp: z
-    .string()
-    .min(6, 'Please enter the 6-digit code.')
-    .max(6, 'Please enter the 6-digit code.'),
-})
+const formSchema = otpSchema
 
 type OtpFormProps = HTMLAttributes<HTMLFormElement>
 
@@ -34,14 +29,13 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useZodForm(formSchema, {
     defaultValues: { otp: '' },
   })
 
   const otp = (useWatch({ control: form.control, name: 'otp' }) ?? '') as string
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  function onSubmit(data: OtpFormValues) {
     setIsLoading(true)
     showSubmittedData(data)
 
@@ -63,7 +57,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
           name='otp'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className='sr-only'>One-Time Password</FormLabel>
+              <FormLabel className='sr-only'>Tek kullanımlık kod</FormLabel>
               <FormControl>
                 <InputOTP
                   maxLength={6}
@@ -91,7 +85,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
           )}
         />
         <Button className='mt-2' disabled={otp.length < 6 || isLoading}>
-          Verify
+          Doğrula
         </Button>
       </form>
     </Form>
