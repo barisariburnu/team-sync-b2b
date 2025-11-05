@@ -1,5 +1,6 @@
 import { defineConfig, type PluginOption } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import path from 'node:path'
@@ -13,8 +14,27 @@ export default defineConfig({
     }),
     react(),
     tailwindcss(),
+    // Upload source maps to Sentry during production builds
+    sentryVitePlugin({
+      org: 'umay-hb',
+      project: 'javascript-tanstackstart-react',
+      authToken: process.env.VITE_SENTRY_AUTH_TOKEN,
+      telemetry: false,
+      release: {
+        name:
+          process.env.SENTRY_RELEASE ||
+          process.env.VERCEL_GIT_COMMIT_SHA ||
+          process.env.GITHUB_SHA ||
+          'local-build',
+        inject: true,
+        finalize: true,
+      },
+      // Respect CI logging
+      silent: !process.env.CI,
+    }),
   ] as PluginOption[],
   build: {
+    sourcemap: true,
     chunkSizeWarningLimit: 1024,
     rollupOptions: {
       output: {

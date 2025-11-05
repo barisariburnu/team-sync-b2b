@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { startSpan } from '@shared/lib/sentry'
 import { showSubmittedData } from '@shared/lib/show-submitted-data'
 import { Button } from '@/components/ui/button'
 import {
@@ -50,19 +51,30 @@ export function TasksImportDialog({
 
   const fileRef = form.register('file')
 
-  const onSubmit = () => {
-    const file = form.getValues('file')
+  const onSubmit = () =>
+    startSpan(
+      {
+        name: 'Tasks Import',
+        op: 'file.upload',
+        attributes: { area: 'tasks', component: 'TasksImportDialog' },
+      },
+      () => {
+        const file = form.getValues('file')
 
-    if (file && file[0]) {
-      const fileDetails = {
-        name: file[0].name,
-        size: file[0].size,
-        type: file[0].type,
+        if (file && file[0]) {
+          const fileDetails = {
+            name: file[0].name,
+            size: file[0].size,
+            type: file[0].type,
+          }
+          showSubmittedData(
+            fileDetails,
+            'You have imported the following file:'
+          )
+        }
+        onOpenChange(false)
       }
-      showSubmittedData(fileDetails, 'You have imported the following file:')
-    }
-    onOpenChange(false)
-  }
+    )
 
   return (
     <Dialog

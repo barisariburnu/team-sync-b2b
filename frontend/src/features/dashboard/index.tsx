@@ -17,6 +17,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { Analytics } from './components/analytics'
 import { Overview } from './components/overview'
 import { RecentSales } from './components/recent-sales'
+import { SentryDemo } from '@shared/components/sentry-demo'
 
 export function Dashboard() {
   return (
@@ -38,6 +39,7 @@ export function Dashboard() {
           <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
           <div className='flex items-center space-x-2'>
             <Button>Download</Button>
+            <SentryDemo />
           </div>
         </div>
         <Tabs

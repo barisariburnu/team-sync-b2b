@@ -1,12 +1,14 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from '@tanstack/react-router'
-import { AppProviders } from '@config/providers'
 import { router } from '@config/init'
+import { AppProviders } from '@config/providers'
+import { initSentry } from '@shared/lib/sentry'
 // Styles
 import './styles/index.css'
 
-// Initialization moved to @config/init
+// Initialize Sentry as early as possible
+initSentry()
 
 // Render the app
 const rootElement = document.getElementById('root')!

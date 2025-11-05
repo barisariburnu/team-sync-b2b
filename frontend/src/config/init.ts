@@ -1,10 +1,11 @@
 import { AxiosError } from 'axios'
 import { QueryCache, QueryClient } from '@tanstack/react-query'
 import { createRouter } from '@tanstack/react-router'
+import { routeTree } from '@/routeTree.gen'
+import { handleServerError } from '@shared/lib/handle-server-error'
+import { captureException } from '@shared/lib/sentry'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/stores/auth-store'
-import { handleServerError } from '@shared/lib/handle-server-error'
-import { routeTree } from '@/routeTree.gen'
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +28,7 @@ export const queryClient = new QueryClient({
     mutations: {
       onError: (error) => {
         handleServerError(error)
+        captureException(error)
 
         if (error instanceof AxiosError) {
           if (error.response?.status === 304) {
@@ -38,6 +40,7 @@ export const queryClient = new QueryClient({
   },
   queryCache: new QueryCache({
     onError: (error) => {
+      captureException(error)
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           toast.error('Session expired!')

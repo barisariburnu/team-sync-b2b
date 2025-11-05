@@ -20,7 +20,7 @@ vi.mock('react-top-loading-bar', () => {
   return { default: MockLoadingBar }
 })
 
-import { NavigationProgress } from '../navigation-progress'
+import { NavigationProgress } from '@shared/components/navigation-progress'
 
 describe('NavigationProgress', () => {
   beforeEach(() => {
