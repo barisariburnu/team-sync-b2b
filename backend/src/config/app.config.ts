@@ -1,23 +1,23 @@
-import { getEnv } from "../utils/get-env";
+import { getEnv } from '../utils/get-env';
 
 const appConfig = () => ({
-    PORT: getEnv("PORT", "5000"),
-    NODE_ENV: getEnv("NODE_ENV", "development"),
-    BASE_PATH: getEnv("BASE_PATH", "/api"),
-    MONGO_URI: getEnv("MONGO_URI", ""),
+  // Application
+  PORT: getEnv('PORT', '5000'),
+  NODE_ENV: getEnv('NODE_ENV', 'development'),
+  BASE_PATH: getEnv('BASE_PATH', '/api/v1'),
 
-    JWT_SECRET: getEnv("JWT_SECRET"),
-    JWT_EXPIRES_IN: getEnv("JWT_EXPIRES_IN", "24h") as string, // 1 day
-   
-    SESSION_SECRET: getEnv("SESSION_SECRET"),
-    SESSION_EXPIRES_IN: getEnv("SESSION_EXPIRES_IN", "1d"),
+  // Database
+  POSTGRES_URL: getEnv('POSTGRES_URL', 'postgres://user:password@localhost:5432/umay'),
 
-    GOOGLE_CLIENT_ID: getEnv("GOOGLE_CLIENT_ID"),
-    GOOGLE_CLIENT_SECRET: getEnv("GOOGLE_CLIENT_SECRET"),
-    GOOGLE_CALLBACK_URL: getEnv("GOOGLE_CALLBACK_URL"),
+  // Auth
+  JWT_SECRET: getEnv('JWT_SECRET', 'super_secret_jwt_key'),
+  JWT_EXPIRES_IN: getEnv('JWT_EXPIRES_IN', '24h') as string, // 1 day
 
-    FRONTEND_ORIGIN: getEnv("FRONTEND_ORIGIN", "http://localhost:5173"),
-    FRONTEND_GOOGLE_CALLBACK_URL: getEnv("FRONTEND_GOOGLE_CALLBACK_URL", "http://localhost:5173/oauth/google/callback"),
+  // Frontend
+  FRONTEND_URL: getEnv('FRONTEND_URL', 'http://localhost:5173'),
+
+  // Logging
+  LOG_LEVEL: getEnv('LOG_LEVEL', 'info'),
 });
 
 export const config = appConfig();

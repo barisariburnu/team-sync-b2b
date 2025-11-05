@@ -1,0 +1,50 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "es2021": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "unused-imports", "security"],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:security/recommended",
+    "eslint:recommended",
+    "prettier"
+  ],
+  "rules": {
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+    ],
+    "@typescript-eslint/no-namespace": ["error", { "allowDeclarations": true }],
+    "@typescript-eslint/no-explicit-any": "error",
+    "security/detect-object-injection": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          { "group": ["mongoose"], "message": "Mongoose is deprecated. Use Drizzle + Postgres." },
+          {
+            "group": [
+              "passport*",
+              "passport",
+              "passport-google-oauth20",
+              "passport-local",
+              "passport-jwt"
+            ],
+            "message": "Passport-based auth is deprecated; use JWT routes under v1."
+          },
+          {
+            "group": ["cookie-session", "express-session"],
+            "message": "Session middlewares are not used in our stateless API."
+          }
+        ]
+      }
+    ]
+  },
+  "ignorePatterns": ["dist/**", "node_modules/**"]
+}

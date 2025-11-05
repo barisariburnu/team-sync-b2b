@@ -27,6 +27,16 @@
     /* Modules */
     "module": "commonjs",                                /* Specify what module code is generated. */
     "rootDir": "./src",                                  /* Specify the root folder within your source files. */
+    "baseUrl": "./src",                                  /* Base directory for non-relative imports. */
+    "paths": {
+      "@modules/*": ["modules/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@config/*": ["config/*"],
+      "@utils/*": ["utils/*"],
+      "@db/*": ["db/*"],
+      "@routes/*": ["routes/*"],
+      "@enums/*": ["enums/*"]
+    },
     // "moduleResolution": "node10",                     /* Specify how TypeScript looks up a file from a given module specifier. */
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     // "paths": {},                                      /* Specify a set of entries that re-map imports to additional lookup locations. */

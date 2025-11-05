@@ -1,69 +1,61 @@
-import "dotenv/config";
-import express, { NextFunction, Request, Response } from "express";
-import cors from "cors";
-//import session from "cookie-session";
-import { config } from "./config/app.config";
-import connectToDatabase from "./config/database.config";
-import { errorHandler } from "./middlewares/errorHandler.middleware";
-import { HTTP_STATUS } from "./config/http.config";
-import { asyncHandler } from "./middlewares/asyncHandler.middleware";
+import 'dotenv/config';
+import express, { NextFunction, Request, Response } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
+import { config } from '@config/app.config';
+import { errorHandler } from '@middlewares/error-handler.middleware';
+import { HTTP_STATUS } from '@config/http.config';
+import { asyncHandler } from '@middlewares/async-handler.middleware';
+import { requestLogger } from '@middlewares/request-logger.middleware';
+import v1Router from '@routes/v1/index';
+import { connectPostgres } from '@db/index';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from '@config/openapi.config';
+import logger from '@config/logger.config';
 
-import "./config/passport.config";
-import { passportAuthenticateJWT } from "./config/passport.config";
-import passport from "passport";
-import authRoutes from "./routes/auth.route";
-import userRoutes from "./routes/user.route";
-import workspaceRoutes from "./routes/workspace.route";
-import memberRoutes from "./routes/member.route";
-import projectRoutes from "./routes/project.route";
-import taskRoutes from "./routes/task.routes";
-
-const app = express();
-const BASE_PATH = config.BASE_PATH;
+export const app = express();
 
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-//app.use(
-//    session({
-//        name: "session",
-//        keys: [config.SESSION_SECRET],
-//        maxAge: 24 * 60 * 60 * 1000,
-//        httpOnly: true,
-//        secure: config.NODE_ENV === "production",
-//        sameSite: "lax",
-//    })
-//);
-
-app.use(passport.initialize());
-// app.use(passport.session());
-
 app.use(
-    cors({
-        origin: config.FRONTEND_ORIGIN,
-        credentials: true,
-    })
+  cors({
+    origin: config.FRONTEND_URL,
+    credentials: true,
+  }),
 );
+
+app.use(helmet());
+app.use(compression());
+app.use(requestLogger);
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+  }),
+);
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get(
-    `/`,
-    asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-        return res.status(HTTP_STATUS.OK).json({ message: "OK" });
-    })
+  `/`,
+  asyncHandler(async (_req: Request, res: Response, _next: NextFunction) => {
+    return res.status(HTTP_STATUS.OK).json({ message: 'OK' });
+  }),
 );
 
-app.use(`${BASE_PATH}/auth`, authRoutes);
-app.use(`${BASE_PATH}/user`, passportAuthenticateJWT, userRoutes);
-app.use(`${BASE_PATH}/workspace`, passportAuthenticateJWT, workspaceRoutes);
-app.use(`${BASE_PATH}/member`, passportAuthenticateJWT, memberRoutes);
-app.use(`${BASE_PATH}/project`, passportAuthenticateJWT, projectRoutes);
-app.use(`${BASE_PATH}/task`, passportAuthenticateJWT, taskRoutes);
+app.use(config.BASE_PATH, v1Router);
 
 app.use(errorHandler);
 
-app.listen(config.PORT, async () => {
-    console.log(`Server is running on port ${config.PORT} in ${config.NODE_ENV} mode`);
-    await connectToDatabase();
-});
-
+if (config.NODE_ENV !== 'test') {
+  app.listen(config.PORT, async () => {
+    logger.info(`Server is running on port ${config.PORT} in ${config.NODE_ENV} mode`);
+    connectPostgres();
+  });
+}
