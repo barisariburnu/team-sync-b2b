@@ -26,7 +26,7 @@
     },
 
     /* Test types */
-    "types": ["vitest", "node"]
+    "types": ["vitest", "node", "vite/client"]
   },
   "include": [
     "src/**/*.test.ts",
