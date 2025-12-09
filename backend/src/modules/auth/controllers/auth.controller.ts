@@ -3,6 +3,9 @@ import { asyncHandler } from '@middlewares/async-handler.middleware';
 import { HTTP_STATUS } from '@config/http.config';
 import { signAccessToken, verifyPassword } from '@modules/auth/services/auth.service';
 
+/**
+ * Kullanıcı girişi için JWT üretir. Şema doğrulamadan geçen email+password bekler.
+ */
 export const loginController = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { email, password } = req.body as { email: string; password: string };

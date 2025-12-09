@@ -1,4 +1,5 @@
 import swaggerJSDoc from 'swagger-jsdoc';
+import { config } from './app.config';
 
 const options: swaggerJSDoc.Options = {
   definition: {
@@ -8,7 +9,7 @@ const options: swaggerJSDoc.Options = {
       version: '1.0.0',
       description: 'API documentation for v1 routes',
     },
-    servers: [{ url: 'http://localhost:8000/api/v1' }],
+    servers: [{ url: `http://localhost:${process.env.PORT || config.PORT}${config.BASE_PATH}` }],
     components: {
       securitySchemes: {
         bearerAuth: {

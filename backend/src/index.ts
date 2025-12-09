@@ -15,6 +15,7 @@ import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from '@config/openapi.config';
 import logger from '@config/logger.config';
 
+/** Express uygulaması ve orta katmanları */
 export const app = express();
 
 app.use(express.json());

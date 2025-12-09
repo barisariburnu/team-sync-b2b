@@ -3,6 +3,7 @@ import { asyncHandler } from '@middlewares/async-handler.middleware';
 import { HTTP_STATUS } from '@config/http.config';
 import { getCurrentUser } from '@modules/users/services/users.service';
 
+/** Geçerli kullanıcı bilgisini döner. */
 export const meController = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
     const user = getCurrentUser(req);

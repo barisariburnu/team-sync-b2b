@@ -5,6 +5,7 @@ import { z, ZodError } from 'zod';
 import { ErrorCodeEnum } from '@enums/error-code.enum';
 import logger from '@config/logger.config';
 
+/** Zod doğrulama hatalarını HTTP 400 formatına çevirir. */
 const formatZodError = (res: Response, err: z.ZodError): void => {
   const errors = err?.issues.map((err) => ({
     field: err.path.join('.'),
@@ -18,6 +19,7 @@ const formatZodError = (res: Response, err: z.ZodError): void => {
   });
 };
 
+/** Uygulama genel hata yakalayıcısı. Tanınan hata tiplerine uygun cevap döner. */
 export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
   logger.error(`Error occurred on PATH: ${req.path}`, { error: err?.message, stack: err?.stack });
 

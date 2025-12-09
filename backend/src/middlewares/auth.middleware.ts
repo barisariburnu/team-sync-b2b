@@ -18,6 +18,7 @@ declare global {
   }
 }
 
+/** Bearer JWT doğrulaması yapar, geçerliyse `req.user` alanını doldurur. */
 export const authenticateJWT = (req: Request, _res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {

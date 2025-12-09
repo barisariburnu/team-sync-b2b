@@ -6,6 +6,8 @@ let app: express.Express;
 
 beforeAll(async () => {
   process.env.NODE_ENV = 'test';
+  process.env.JWT_SECRET = process.env.JWT_SECRET || 'test_secret';
+  process.env.POSTGRES_URL = process.env.POSTGRES_URL || 'postgres://user:password@localhost:5432/test';
   const mod = await import('../../src/index');
   app = mod.app;
 });

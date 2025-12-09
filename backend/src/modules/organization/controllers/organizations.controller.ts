@@ -9,6 +9,7 @@ import {
   deleteOrganization,
 } from '@modules/organization/services/organizations.service';
 
+/** Organizasyonları listeler. */
 export const listOrganizationsController = asyncHandler(
   async (_req: Request, res: Response, _next: NextFunction) => {
     const list = await listOrganizations();
@@ -16,6 +17,7 @@ export const listOrganizationsController = asyncHandler(
   },
 );
 
+/** ID ile organizasyon detayını döner. */
 export const getOrganizationController = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
     const id = Number(req.params.id);
@@ -30,6 +32,7 @@ export const getOrganizationController = asyncHandler(
   },
 );
 
+/** Yeni organizasyon oluşturur. */
 export const createOrganizationController = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { name, metadata } = req.body as { name: string; metadata?: Record<string, unknown> };
@@ -38,6 +41,7 @@ export const createOrganizationController = asyncHandler(
   },
 );
 
+/** Organizasyon bilgilerini günceller. */
 export const updateOrganizationController = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
     const id = Number(req.params.id);
@@ -57,6 +61,7 @@ export const updateOrganizationController = asyncHandler(
   },
 );
 
+/** Organizasyonu siler. */
 export const deleteOrganizationController = asyncHandler(
   async (req: Request, res: Response, _next: NextFunction) => {
     const id = Number(req.params.id);

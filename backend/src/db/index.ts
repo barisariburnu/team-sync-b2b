@@ -5,6 +5,7 @@ import { config } from '../config/app.config';
 let client: ReturnType<typeof postgres> | null = null;
 let db: ReturnType<typeof drizzle> | null = null;
 
+/** PostgreSQL bağlantısını başlatır ve Drizzle istemcisi döner. */
 export const connectPostgres = () => {
   if (!client) {
     client = postgres(config.POSTGRES_URL, {
@@ -17,6 +18,7 @@ export const connectPostgres = () => {
   return db!;
 };
 
+/** Mevcut Drizzle istemcisini döner, yoksa bağlantıyı başlatır. */
 export const getDb = () => {
   if (!db) {
     return connectPostgres();

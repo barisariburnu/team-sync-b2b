@@ -13,10 +13,10 @@
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "barisariburnu <barisariburnu@gmail.com>",
+  "license": "MIT",
   "type": "commonjs",
-  "description": "",
+  "description": "Umay Backend: Express + TypeScript API with Drizzle ORM",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "compression": "^1.8.1",
@@ -43,7 +43,7 @@
     "@types/express": "^5.0.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
-    "@types/node": "^24.10.0",
+    "@types/node": "^24.10.2",
     "@types/supertest": "^6.0.3",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
@@ -63,7 +63,8 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.0.6"
+    "vitest": "^4.0.6",
+    "vite": "^7.2.0"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [

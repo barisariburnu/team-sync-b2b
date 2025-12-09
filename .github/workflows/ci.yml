@@ -27,10 +27,12 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
-          cache-dependency-path: backend/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
+
+      - name: Set test env
+        run: echo "JWT_SECRET=test_secret" >> $GITHUB_ENV && echo "POSTGRES_URL=postgres://user:password@localhost:5432/test" >> $GITHUB_ENV
 
       - name: Lint
         run: pnpm lint
@@ -75,10 +77,9 @@ jobs:
         with:
           node-version: 20
           cache: "pnpm"
-          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Lint
         run: pnpm lint

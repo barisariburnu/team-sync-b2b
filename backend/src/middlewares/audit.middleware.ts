@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import logger from '@config/logger.config';
 
+/** İstek-yanıt süresini ve temel metrikleri ölçüp loglar. */
 export const auditMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   res.on('finish', () => {
