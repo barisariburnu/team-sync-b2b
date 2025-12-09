@@ -1,10 +1,10 @@
 {
-  "name": "umay-admin",
+  "name": "team-sync-admin",
   "private": false,
   "version": "2.2.0",
   "license": "MIT",
   "type": "module",
-  "description": "Umay Admin: React + Vite admin panel",
+  "description": "Team Sync Admin: React + Vite admin panel",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

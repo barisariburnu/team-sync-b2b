@@ -11,7 +11,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         <div className='mb-4 flex items-center justify-center'>
           <Logo className='me-2' />
           <div>
-            <h1 className='text-xl font-medium'>Umay Console</h1>
+            <h1 className='text-xl font-medium'>Team Sync Console</h1>
             <p className='text-muted-foreground text-xs'>
               Secure access to your admin tools
             </p>

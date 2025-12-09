@@ -5,7 +5,7 @@ const options: swaggerJSDoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Umay API',
+      title: 'Team Sync API',
       version: '1.0.0',
       description: 'API documentation for v1 routes',
     },

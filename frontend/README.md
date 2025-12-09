@@ -1,8 +1,8 @@
-# Umay Admin Dashboard
+# Team Sync Admin Dashboard
 
 Admin Dashboard UI crafted with Shadcn and Vite. Built with responsiveness and accessibility in mind.
 
-![alt text](public/images/umay-admin.png)
+![alt text](public/images/team-sync-admin.png)
 
 I've been creating dashboard UIs at work and for my personal projects. I always wanted to make a reusable collection of dashboard UI for future projects; and here it is now. While I've created a few custom components, some of the code is directly adapted from ShadcnUI examples.
 
@@ -77,13 +77,13 @@ If you want to update components using the Shadcn CLI (e.g., `npx shadcn@latest 
 Clone the project
 
 ```bash
-  git clone https://github.com/satnaing/umay-admin.git
+  git clone https://github.com/satnaing/team-sync-admin.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd umay-admin
+  cd team-sync-admin
 ```
 
 Install dependencies

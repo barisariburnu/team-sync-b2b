@@ -1,6 +1,6 @@
 # Team Sync B2B
 
-Umay Backend ve Umay Admin’den oluşan monorepo. Backend, Express + TypeScript ve Drizzle ORM ile REST API sunar; Frontend, React + Vite ile yönetim arayüzü sağlar.
+Team Sync Backend ve Team Sync Admin’den oluşan monorepo. Backend, Express + TypeScript ve Drizzle ORM ile REST API sunar; Frontend, React + Vite ile yönetim arayüzü sağlar.
 
 ## Özellikler
 

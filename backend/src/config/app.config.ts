@@ -7,7 +7,7 @@ const appConfig = () => ({
   BASE_PATH: getEnv('BASE_PATH', '/api/v1'),
 
   // Database
-  POSTGRES_URL: getEnv('POSTGRES_URL', 'postgres://user:password@localhost:5432/umay'),
+  POSTGRES_URL: getEnv('POSTGRES_URL', 'postgres://user:password@localhost:5432/team-sync'),
 
   // Auth
   JWT_SECRET: getEnv('JWT_SECRET', 'super_secret_jwt_key'),

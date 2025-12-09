@@ -1,5 +1,5 @@
 {
-  "name": "umay-backend",
+  "name": "team-sync-backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "author": "barisariburnu <barisariburnu@gmail.com>",
   "license": "MIT",
   "type": "commonjs",
-  "description": "Umay Backend: Express + TypeScript API with Drizzle ORM",
+  "description": "Team Sync Backend: Express + TypeScript API with Drizzle ORM",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "compression": "^1.8.1",

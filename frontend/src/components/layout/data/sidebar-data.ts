@@ -33,7 +33,7 @@ export const sidebarData: SidebarData = {
   },
   teams: [
     {
-      name: 'Umay Admin',
+      name: 'Team Sync Admin',
       logo: Command,
       plan: 'Vite + ShadcnUI',
     },

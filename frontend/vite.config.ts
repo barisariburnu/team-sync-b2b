@@ -16,7 +16,7 @@ export default defineConfig({
     tailwindcss(),
     // Upload source maps to Sentry during production builds
     sentryVitePlugin({
-      org: 'umay-hb',
+      org: 'team-sync-hb',
       project: 'javascript-tanstackstart-react',
       authToken: process.env.VITE_SENTRY_AUTH_TOKEN,
       telemetry: false,

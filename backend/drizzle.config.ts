@@ -6,6 +6,6 @@ export default defineConfig({
   out: './src/db/migrations',
   schema: './src/db/schema/index.ts',
   dbCredentials: {
-    url: config.POSTGRES_URL || 'postgres://user:password@localhost:5432/umay',
+    url: config.POSTGRES_URL || 'postgres://user:password@localhost:5432/team-sync',
   },
 });
